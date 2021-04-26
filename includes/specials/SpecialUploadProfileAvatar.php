@@ -111,13 +111,13 @@ class SpecialUploadProfileAvatar extends SpecialUpload {
 	 * @param string $ext File extension (gif, jpg or png)
 	 */
 	private function showSuccess( $ext ) {
-		global $wgAvatarKey, $wgDBname, $wgUploadBaseUrl, $wgUploadPath, $wgUploadAvatarInRecentChanges;
+		global $wgAvatarKey, $wgDBname, $wgUploadBaseUrl, $wgUploadPath, $wgCosmosProfileUploadAvatarInRecentChanges;
 
 		$uploadPath = $wgUploadBaseUrl ? $wgUploadBaseUrl . $wgUploadPath : $wgUploadPath;
 
 		$user = $this->getUser();
 		$log = new LogPage( 'avatar' );
-		if ( !$wgUploadAvatarInRecentChanges ) {
+		if ( !$wgCosmosProfileUploadAvatarInRecentChanges ) {
 			$log->updateRecentChanges = false;
 		}
 		$log->addEntry(
