@@ -1,0 +1,121 @@
+{
+	"name": "CosmosProfile",
+	"version": "1.15",
+	"author": [
+		"Aaron Wright",
+		"David Pean",
+		"Jack Phoenix",
+		"Universal Omega"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:CosmosProfile",
+	"descriptionmsg": "cosmosprofile-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.35.0"
+	},
+	"MessagesDirs": {
+		"CosmosProfile": [
+			"i18n"
+		]
+	},
+	"AvailableRights": [
+		"avatarremove"
+	],
+	"GroupPermissions": {
+		"sysop": {
+			"avatarremove": true
+		}
+	},
+	"LogActions": {
+		"avatar/avatar": "avatarlogentry"
+	},
+	"LogHeaders": {
+		"avatar": "avatarlogpagetext"
+	},
+	"LogNames": {
+		"avatar": "avatarlogpage"
+	},
+	"LogTypes": [
+		"avatar"
+	],
+	"SpecialPages": {
+		"RemoveProfileAvatar": "SpecialRemoveProfileAvatar",
+		"UploadProfileAvatar": "SpecialUploadProfileAvatar"
+	},
+	"AutoloadClasses": {
+		"SpecialUploadProfileAvatar": "includes/specials/SpecialUploadProfileAvatar.php",
+		"UploadProfileAvatar": "includes/avatar/UploadProfileAvatar.php",
+		"SpecialRemoveProfileAvatar": "includes/specials/SpecialRemoveProfileAvatar.php",
+		"CosmosProfileHooks": "includes/CosmosProfileHooks.php",
+		"CosmosProfileHeader": "includes/CosmosProfileHeader.php",
+		"ProfileAvatar": "includes/avatar/ProfileAvatar.php"
+	},
+	"ResourceModules": {
+		"ext.cosmosprofile.userprofile.css": {
+			"targets": [
+				"mobile",
+				"desktop"
+			],
+			"styles": [
+				"resources/css/UserProfile.css"
+			]
+		},
+		"ext.cosmosprofile.userprofile.diff": {
+			"targets": [
+				"mobile",
+				"desktop"
+			],
+			"styles": [
+				"resources/css/AvatarsInDiffs.css"
+			]
+		},
+		"ext.cosmosprofile.userprofile.tabs.css": {
+			"targets": [
+				"mobile",
+				"desktop"
+			],
+			"styles": [
+				"resources/css/ProfileTabs.css"
+			]
+		},
+		"ext.cosmosprofile.special.uploadavatar.css": {
+			"targets": [
+				"mobile",
+				"desktop"
+			],
+			"styles": [
+				"resources/css/SpecialUploadAvatar.css"
+			]
+		},
+		"ext.cosmosprofile.special.uploadavatar.js": {
+			"targets": [
+				"mobile",
+				"desktop"
+			],
+			"scripts": [
+				"resources/js/UploadAvatar.js"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "CosmosProfile"
+	},
+	"Hooks": {
+		"ArticleFromTitle": "CosmosProfileHooks::onArticleFromTitle",
+		"TitleIsAlwaysKnown": "CosmosProfileHooks::onTitleIsAlwaysKnown",
+		"DifferenceEngineShowDiff": "CosmosProfileHooks::onDifferenceEngineShowDiff",
+		"DifferenceEngineOldHeader": "CosmosProfileHooks::onDifferenceEngineOldHeader",
+		"DifferenceEngineNewHeader": "CosmosProfileHooks::onDifferenceEngineNewHeader"
+	},
+	"config": {
+		"CosmosProfileAvatarsInDiffs": {
+			"value": false
+		},
+		"CosmosProfileUploadAvatarInRecentChanges": {
+			"value": true
+		}
+	},
+	"manifest_version": 2
+}
