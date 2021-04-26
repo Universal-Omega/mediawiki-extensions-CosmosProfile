@@ -134,7 +134,7 @@ class SpecialRemoveProfileAvatar extends SpecialPage {
 	 * Handle form submission, i.e. do everything we need to & log it
 	 */
 	private function onSubmit() {
-		global $wgUploadAvatarInRecentChanges;
+		global $wgCosmosProfileUploadAvatarInRecentChanges;
 
 		$user = $this->getUser();
 		// Only privileged users can delete others' avatars, but everyone
@@ -153,7 +153,7 @@ class SpecialRemoveProfileAvatar extends SpecialPage {
 		$this->deleteImage( $user_id, 'ml' );
 
 		$log = new LogPage( 'avatar' );
-		if ( !$wgUploadAvatarInRecentChanges ) {
+		if ( !$wgCosmosProfileUploadAvatarInRecentChanges ) {
 			$log->updateRecentChanges = false;
 		}
 		$log->addEntry(
