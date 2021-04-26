@@ -220,7 +220,7 @@ class CosmosProfileHeader extends Article {
 
 		if (
 			is_object( $title ) &&
-			( $title->getNamespace() == NS_USER || $title->getNamespace() == NS_USER_PROFILE ) &&
+			$title->inNamespace( NS_USER ) &&
 			!$title->isSubpage()
 		) {
 			$user = $title->getText();
