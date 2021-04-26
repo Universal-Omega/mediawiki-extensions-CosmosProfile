@@ -2,7 +2,6 @@
 
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Skin\Cosmos\CosmosSocialProfile;
 
 /**
  * User profile Wiki Page
@@ -156,27 +155,27 @@ class CosmosProfileHeader extends Article {
 					wfMessage( 'user-profile-remove-avatar' )->text() . '</a>
 			</p>';
 		}
-		global $wgCosmosSocialProfileShowGroupTags, $wgCosmosSocialProfileShowEditCount, $wgCosmosSocialProfileFollowBioRedirects, $wgCosmosSocialProfileAllowBio;
-		$groupTags = $wgCosmosSocialProfileShowGroupTags
-				? CosmosSocialProfile::getUserGroups( $this->profileOwner->getName() )
+		global $wgCosmosProfileShowGroupTags, $wgCosmosProfileShowEditCount, $wgCosmosProfileFollowBioRedirects, $wgCosmosProfileAllowBio;
+		$groupTags = $wgCosmosProfileShowGroupTags
+				? self::getUserGroups( $this->profileOwner->getName() )
 				: null;
 
-			if ( $wgCosmosSocialProfileShowEditCount ) {
+			if ( $wgCosmosProfileShowEditCount ) {
 				$contribsURL = $contributions->getFullURL();
 
 				$editCount = '<br/> <div class="contributions-details tally"><a href="' .
-					htmlspecialchars( $contribsURL ) . '"><em>' . CosmosSocialProfile::getUserEdits( $this->profileOwner->getName() ) .
-					'</em><span>' . $context->msg( 'cosmos-editcount-label' )->escaped() . '<br>' .
-					CosmosSocialProfile::getUserRegistration( $this->profileOwner->getName() ) . '</span></a></div>';
+					htmlspecialchars( $contribsURL ) . '"><em>' . self::getUserEdits( $this->profileOwner->getName() ) .
+					'</em><span>' . $context->msg( 'cosmosprofile-editcount-label' )->escaped() . '<br>' .
+					self::getUserRegistration( $this->profileOwner->getName() ) . '</span></a></div>';
 			} else {
 				$editCount = null;
 			}
 
 			// experimental
-			$followBioRedirects = $wgCosmosSocialProfileFollowBioRedirects;
+			$followBioRedirects = $wgCosmosProfileFollowBioRedirects;
 
-			$bio = $wgCosmosSocialProfileAllowBio
-				? CosmosSocialProfile::getUserBio( $this->profileOwner->getName(), $followBioRedirects )
+			$bio = $wgCosmosProfileAllowBio
+				? self::getUserBio( $this->profileOwner->getName(), $followBioRedirects )
 				: null;
 
 
@@ -210,5 +209,123 @@ class CosmosProfileHeader extends Article {
 		</div>';
 
 		return $output;
+	}
+
+	/**
+	 * @param string $user
+	 * @return User|false
+	 */
+	private static function getUser( $user ) {
+		$title = Title::newFromText( $user );
+
+		if (
+			is_object( $title ) &&
+			( $title->getNamespace() == NS_USER || $title->getNamespace() == NS_USER_PROFILE ) &&
+			!$title->isSubpage()
+		) {
+			$user = $title->getText();
+		}
+
+		$user = User::newFromName( $user );
+
+		return $user;
+	}
+
+	/**
+	 * @param string $user
+	 * @return string|null
+	 */
+	private static function getUserRegistration( $user ) {
+		$user = self::getUser( $user );
+
+		if ( $user ) {
+			return date( 'F j, Y', strtotime( $user->getRegistration() ) );
+		}
+	}
+
+	/**
+	 * @param string $user
+	 * @return string|null
+	 */
+	private static function getUserGroups( $user ) {
+		global $wgCosmosProfileTagGroups, $wgCosmosProfileNumberofGroupTags;
+
+		$user = self::getUser( $user );
+
+		if ( $user && $user->isBlocked() ) {
+			$userTags = Html::element(
+				'span',
+				[ 'class' => 'tag tag-blocked' ],
+				wfMessage( 'cosmosprofile-user-blocked' )->text()
+			);
+		} elseif ( $user ) {
+			$numberOfTags = 0;
+			$userTags = '';
+
+			foreach ( $wgCosmosProfileTagGroups as $value ) {
+				if ( in_array( $value, $user->getGroups() ) ) {
+					$numberOfTags++;
+					$numberOfTagsConfig = $wgCosmosProfileNumberofGroupTags;
+					$userGroupMessage = wfMessage( "group-{$value}-member" );
+
+					if ( $numberOfTags <= $numberOfTagsConfig ) {
+						$userTags .= Html::element(
+							'span',
+							[ 'class' => 'tag tag-' . Sanitizer::escapeClass( $value ) ],
+							ucfirst( ( !$userGroupMessage->isDisabled() ? $userGroupMessage->text() : $value ) )
+						);
+					}
+				}
+			}
+		} else {
+			$userTags = null;
+		}
+
+		return $userTags;
+	}
+
+	/**
+	 * @param string $user
+	 * @return int|null
+	 */
+	private static function getUserEdits( $user ) {
+		$user = self::getUser( $user );
+
+		if ( $user ) {
+			return $user->getEditCount();
+		}
+	}
+
+	/**
+	 * @param string $user
+	 * @param bool $followRedirects
+	 * @return string|null
+	 */
+	private static function getUserBio( $user, $followRedirects ) {
+		if ( $user && Title::newFromText( "User:{$user}/bio" )->isKnown() ) {
+			$userBioPage = Title::newFromText( "User:{$user}/bio" );
+
+			$wikiPage = new WikiPage( $userBioPage );
+
+			$content = $wikiPage->getContent();
+
+			// experimental
+			if (
+				$followRedirects &&
+				$userBioPage->isRedirect() &&
+				$content->getRedirectTarget()->isKnown() &&
+				$content->getRedirectTarget()->inNamespace( NS_USER )
+			) {
+				$userBioPage = $content->getRedirectTarget();
+
+				$wikiPage = new WikiPage( $userBioPage );
+
+				$content = $wikiPage->getContent();
+			}
+
+			return $content instanceof TextContent
+				? Html::element( 'p', [ 'class' => 'bio' ], $content->getText() )
+				: null;
+		}
 	}
 }

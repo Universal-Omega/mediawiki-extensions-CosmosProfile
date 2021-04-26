@@ -115,6 +115,38 @@
 		},
 		"CosmosProfileUploadAvatarInRecentChanges": {
 			"value": true
+		},
+		"CosmosProfileModernTabs": {
+			"value": true,
+			"description": "Enables a modern version of the tabs on profile pages"
+		},
+		"CosmosProfileRoundAvatar": {
+			"value": true,
+			"description": "Makes the avatar round on profile pages"
+		},
+		"CosmosProfileShowEditCount": {
+			"value": true,
+			"description": "Show's the edit count and registration date for the user on profile pages, underneath their username"
+		},
+		"CosmosProfileAllowBio": {
+			"value": true,
+			"description": "Allows users to add a bio to display on their user pages, through Special:MyPage/bio"
+		},
+		"CosmosProfileFollowBioRedirects": {
+			"value": false,
+			"description": "Whether or not to follow redirects from Special:MyPage/bio and display the redirect target as bio instead (experimental)"
+		},
+		"CosmosProfileShowGroupTags": {
+			"value": true,
+			"description": "Enables usergroup tags to appear next to user's username on profile pages"
+		},
+		"CosmosProfileTagGroups": {
+			"value": [ "bureaucrat", "bot", "sysop", "interface-admin" ],
+			"description": "Array of usergroups to show on profile pages if the user has them"
+		},
+		"CosmosProfileNumberofGroupTags": {
+			"value": 2,
+			"description": "Set the max number of group tags to show on a user's profile page if they have them"
 		}
 	},
 	"manifest_version": 2
